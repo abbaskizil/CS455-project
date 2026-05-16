@@ -1,0 +1,20 @@
+# Import all supported languages tree sitter
+import tree_sitter_python as tspython
+import tree_sitter_cpp as tscpp
+import tree_sitter_javascript as tsjavascript
+
+from tree_sitter import Parser, Language
+
+LANGUAGE_MAP = {
+    ".py": tspython,
+    ".cpp": tscpp,
+    ".js": tsjavascript,
+}
+
+def Python_Parser(source_code, file_extension):
+    language_grammer = LANGUAGE_MAP[file_extension]
+    lang = Language(language_grammer.language())
+    parser = Parser(lang)
+    tree = parser.parse(bytes(source_code, "utf8"))
+    root_node = tree.root_node
+    print(f"Root node text: {root_node.text.decode('utf8')}")  # Output: entire code

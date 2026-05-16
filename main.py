@@ -1,13 +1,15 @@
-from git import Repo
+# Standard library
 import os
 import glob
 import shutil
 import stat
 import pathlib
 
-def redo_with_write(func, path, exc_info):
-    os.chmod(path, stat.S_IWUSR)
-    func(path)
+# Third party
+from git import Repo
+
+# Local
+import chunker
 
 # GLOBAL VARIABLES
 current_directory = pathlib.Path().resolve()
@@ -18,8 +20,12 @@ source_code_extensions = (
     ".scala", ".r", ".m", ".sh"
     )
 
+def redo_with_write(func, path, exc_info):
+    os.chmod(path, stat.S_IWUSR)
+    func(path)
+
 # if not repo_exists:
-#     git_url = "https://github.com/omuremreyildiz03/song2vec"
+#     git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
 #     repo_dir = "temp/"
 
 #     Repo.clone_from(git_url, repo_dir)
@@ -27,7 +33,14 @@ source_code_extensions = (
 # else:
 #     shutil.rmtree("temp/", onerror = redo_with_write)
 
-file_list = [(curDir,f) for curDir, subDir, files in os.walk("temp/") for f in files if f.endswith(source_code_extensions)]
-for f in file_list:
+file_list = []
+path_list = [(curDir,f) for curDir, subDir, files in os.walk("temp/") for f in files if f.endswith(source_code_extensions)]
+for f in path_list:
     norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
-    print(norm_path)
+    file_list.append(norm_path)
+    
+for file in file_list:
+    with open(file, "r", encoding="utf-8") as f:
+        content = f.read()
+        extension = "." + file.split(".")[-1]
+        chunker.Python_Parser(content, extension)
