@@ -19,11 +19,16 @@ def Python_Parser(source_code, file_extension):
     root_node = tree.root_node
     function_lst = []
     Find_Functions(root_node, function_lst)
-    print(len(function_lst))
-
+    for function in function_lst:
+        print(function)
 
 def Find_Functions(root_node, function_lst):
     for child in root_node.children:
         if child.type == "function_definition":
-            function_lst.append(child)
+            function_name = child.child_by_field_name("name").text.decode("utf-8")
+            class_name = None
+            if child.parent.parent and child.parent.parent.type == "class_definition":
+                class_name = child.parent.parent.child_by_field_name("name").text.decode("utf-8")
+            full_name = f"{class_name}.{function_name}" if class_name else function_name
+            function_lst.append((child, full_name))
         Find_Functions(child, function_lst)
