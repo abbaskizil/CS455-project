@@ -38,9 +38,9 @@ path_list = [(curDir,fl) for curDir, subDir, files in os.walk("temp/") for fl in
 for f in path_list:
     norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
     file_list.append(norm_path)
-    
+
 for file in file_list:
     with open(file, "r", encoding="utf-8") as f:
         content = f.read()
         extension = "." + file.split(".")[-1]
-        chunker.Python_Parser(content, extension)
+        chunker.Python_Parser(file, content, extension)
