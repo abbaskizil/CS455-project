@@ -17,4 +17,13 @@ def Python_Parser(source_code, file_extension):
     parser = Parser(lang)
     tree = parser.parse(bytes(source_code, "utf8"))
     root_node = tree.root_node
-    print(f"Root node text: {root_node.text.decode('utf8')}")  # Output: entire code
+    function_lst = []
+    Find_Functions(root_node, function_lst)
+    print(len(function_lst))
+
+
+def Find_Functions(root_node, function_lst):
+    for child in root_node.children:
+        if child.type == "function_definition":
+            function_lst.append(child)
+        Find_Functions(child, function_lst)

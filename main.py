@@ -34,7 +34,7 @@ def redo_with_write(func, path, exc_info):
 #     shutil.rmtree("temp/", onerror = redo_with_write)
 
 file_list = []
-path_list = [(curDir,f) for curDir, subDir, files in os.walk("temp/") for f in files if f.endswith(source_code_extensions)]
+path_list = [(curDir,fl) for curDir, subDir, files in os.walk("temp/") for fl in files if fl.endswith(source_code_extensions)]
 for f in path_list:
     norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
     file_list.append(norm_path)
