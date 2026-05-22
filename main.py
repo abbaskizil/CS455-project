@@ -31,8 +31,8 @@ def Chunk_Notebook_Functions(file_path, function_list):
             cell_code = "".join(cell["source"])
             cell_metadata = {
                 "function_name": f"{file_path}::cell_{idx}",
-                "start_line": None,
-                "end_line": None,
+                "start_line": -1,
+                "end_line": -1,
                 "function_content": cell_code
             }
             function_list.append(cell_metadata)
@@ -69,7 +69,12 @@ if __name__ == "__main__":
     # Remove repo after creating all_function_list
     shutil.rmtree("temp/", onerror = redo_with_write)
 
-    embeddings = indexer.Encode_Functions(all_function_list)
-    for m in embeddings:
-        print(m)
-        break
+
+    # If collection does not exist, create and save embeddings inside it 
+    is_collection_empty = indexer.Is_Collection_Empty()
+    if (is_collection_empty):
+        embeddings = indexer.Encode_Functions(all_function_list)
+        indexer.Save_Vectors_In_Database(all_function_list, embeddings)
+
+
+    # will be continued

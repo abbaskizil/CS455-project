@@ -1,10 +1,29 @@
 from sentence_transformers import SentenceTransformer
+import chromadb
 
 # Download the model once
 bi_encoder_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+chroma_client = chromadb.PersistentClient("./chroma_db")
+collection = chroma_client.get_or_create_collection(name="function_collection")
 
 def Encode_Functions(function_list):
     # Calculate embeddings by calling model.encode()
     function_content_list = [f["function_content"] for f in function_list]
     embeddings = bi_encoder_model.encode(function_content_list, show_progress_bar=True)
+    print("\nEMBEDDING...\n")
     return embeddings
+
+
+def Save_Vectors_In_Database(function_list, function_embeddings):
+    # !! if more than nearly 5000 functions, then add by batches
+    collection.add(
+        ids = [f["function_name"] for f in function_list],
+        documents = [f["function_content"] for f in function_list],
+        embeddings = function_embeddings,
+        metadatas = [{k: v for k, v in f.items() if k != "function_content"} for f in function_list]
+    )
+    print("\nSAVING...\n")
+
+
+def Is_Collection_Empty():
+    return collection.count() == 0

@@ -221,3 +221,6 @@ __marimo__/
 
 # Cloned Repo
 temp/
+
+# Vector Database
+chroma_db/
