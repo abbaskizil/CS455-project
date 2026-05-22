@@ -11,6 +11,7 @@ from git import Repo
 
 # Local
 import chunker
+import indexer
 
 # GLOBAL VARIABLES
 current_directory = pathlib.Path().resolve()
@@ -67,3 +68,8 @@ if __name__ == "__main__":
 
     # Remove repo after creating all_function_list
     shutil.rmtree("temp/", onerror = redo_with_write)
+
+    embeddings = indexer.Encode_Functions(all_function_list)
+    for m in embeddings:
+        print(m)
+        break
