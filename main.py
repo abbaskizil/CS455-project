@@ -43,29 +43,27 @@ def Chunk_Code_File_Functions(file_path, function_list, extension):
     all_chunked_functions = chunker.Function_Parser(file_path, source_code, extension)
     function_list.extend(all_chunked_functions)
 
-# Clone the repo you want
-if not repo_exists:
-    git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
-    repo_dir = "temp/"
-    Repo.clone_from(git_url, repo_dir)
 
-file_list = []
-path_list = [(curDir,fl) for curDir, subDir, files in os.walk("temp/") for fl in files if fl.endswith(source_code_extensions)]
-for f in path_list:
-    norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
-    file_list.append(norm_path)
+if __name__ == "__main__":
+    # Clone the repo you want
+    if not repo_exists:
+        git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
+        repo_dir = "temp/"
+        Repo.clone_from(git_url, repo_dir)
 
-all_function_list = []
-for file_path in file_list:
-    extension = "." + file_path.split(".")[-1]
-    if extension == ".ipynb":
-        Chunk_Notebook_Functions(file_path, all_function_list)
-    else:
-        Chunk_Code_File_Functions(file_path, all_function_list, extension)
+    file_list = []
+    path_list = [(curDir,fl) for curDir, subDir, files in os.walk("temp/") for fl in files if fl.endswith(source_code_extensions)]
+    for f in path_list:
+        norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
+        file_list.append(norm_path)
 
-# Remove repo after creating all_function_list
-shutil.rmtree("temp/", onerror = redo_with_write)
+    all_function_list = []
+    for file_path in file_list:
+        extension = "." + file_path.split(".")[-1]
+        if extension == ".ipynb":
+            Chunk_Notebook_Functions(file_path, all_function_list)
+        else:
+            Chunk_Code_File_Functions(file_path, all_function_list, extension)
 
-for i in all_function_list:
-    print(i)
-    print()
+    # Remove repo after creating all_function_list
+    shutil.rmtree("temp/", onerror = redo_with_write)
