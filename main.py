@@ -4,6 +4,7 @@ import glob
 import shutil
 import stat
 import pathlib
+import json
 
 # Third party
 from git import Repo
@@ -20,6 +21,28 @@ def redo_with_write(func, path, exc_info):
     os.chmod(path, stat.S_IWUSR)
     func(path)
 
+def Chunk_Notebook_Functions(file_path, function_list):
+    with open(file_path, "r", encoding="utf-8") as f:
+            notebook = json.load(f)
+            
+    for idx, cell in enumerate(notebook["cells"]):
+        if cell["cell_type"] == "code":
+            cell_code = "".join(cell["source"])
+            cell_metadata = {
+                "function_name": f"{file_path}::cell_{idx}",
+                "start_line": None,
+                "end_line": None,
+                "function_content": cell_code
+            }
+            function_list.append(cell_metadata)
+
+
+def Chunk_Code_File_Functions(file_path, function_list, extension):
+    with open(file_path, "r", encoding="utf-8") as f:
+        source_code = f.read()
+    all_chunked_functions = chunker.Function_Parser(file_path, source_code, extension)
+    function_list.extend(all_chunked_functions)
+
 # if not repo_exists:
 #     git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
 #     repo_dir = "temp/"
@@ -35,8 +58,14 @@ for f in path_list:
     norm_path = os.path.normpath(os.path.join(current_directory, f[0], f[1]))
     file_list.append(norm_path)
 
-for file in file_list:
-    with open(file, "r", encoding="utf-8") as f:
-        content = f.read()
-        extension = "." + file.split(".")[-1]
-        chunker.Python_Parser(file, content, extension)
+all_function_list = []
+for file_path in file_list:
+    extension = "." + file_path.split(".")[-1]
+    if extension == ".ipynb":
+        Chunk_Notebook_Functions(file_path, all_function_list)
+    else:
+        Chunk_Code_File_Functions(file_path, all_function_list, extension)
+
+for i in all_function_list:
+    print(i)
+    print()

@@ -21,10 +21,11 @@ LANGUAGE_MAP = {
     ".ipynb": {"grammar": None, "function_node": None, "class_node": None}
 }
 
-def Python_Parser(file_path, source_code, file_extension):
+def Function_Parser(file_path, source_code, file_extension):
+    function_list = []
     if file_extension == ".ipynb":
     # handle notebook separately
-        return
+        return []
     language_grammar = LANGUAGE_MAP[file_extension]["grammar"]
     # Handle .ts specially - no .language() methode for its grammar
     if file_extension == ".ts":
@@ -35,17 +36,15 @@ def Python_Parser(file_path, source_code, file_extension):
     parser = Parser(lang)
     tree = parser.parse(bytes(source_code, "utf8"))
     root_node = tree.root_node
-    function_lst = []
-    Find_Functions(file_path, root_node, function_lst, file_extension)
-    for function in function_lst:
+    parsed_function_list = []
+    Extract_Functions(file_path, root_node, parsed_function_list, file_extension)
+    for function in parsed_function_list:
         function_metadata = Function_Metadata_Creator(function[0], function[1])
-        for k,v in function_metadata.items():
-            print(f"{k}: {v}")
+        function_list.append(function_metadata)
+    return function_list
 
 
-def Find_Functions(file_path, root_node, function_lst, file_extension):
-    if file_extension == ".py":
-        return
+def Extract_Functions(file_path, root_node, parsed_function_list, file_extension):
     for child in root_node.children:
         function_node = LANGUAGE_MAP[file_extension]["function_node"]
         # Check whether function_node value a list or string (list for .ts and .js)
@@ -60,8 +59,8 @@ def Find_Functions(file_path, root_node, function_lst, file_extension):
             if child.parent.parent and child.parent.parent.type == LANGUAGE_MAP[file_extension]["class_node"]:
                 class_name = child.parent.parent.child_by_field_name("name").text.decode("utf-8")
             full_name = f"{file_path}::{class_name}.{function_name}" if class_name else f"{file_path}::.{function_name}"
-            function_lst.append((child, full_name))
-        Find_Functions(file_path, child, function_lst, file_extension)
+            parsed_function_list.append((child, full_name))
+        Extract_Functions(file_path, child, parsed_function_list, file_extension)
 
 
 def Function_Metadata_Creator(function_node, function_header):
