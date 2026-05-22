@@ -43,14 +43,11 @@ def Chunk_Code_File_Functions(file_path, function_list, extension):
     all_chunked_functions = chunker.Function_Parser(file_path, source_code, extension)
     function_list.extend(all_chunked_functions)
 
-# if not repo_exists:
-#     git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
-#     repo_dir = "temp/"
-
-#     Repo.clone_from(git_url, repo_dir)
-
-# else:
-#     shutil.rmtree("temp/", onerror = redo_with_write)
+# Clone the repo you want
+if not repo_exists:
+    git_url = "https://github.com/omuremreyildiz03/spotify-wrap-demo"
+    repo_dir = "temp/"
+    Repo.clone_from(git_url, repo_dir)
 
 file_list = []
 path_list = [(curDir,fl) for curDir, subDir, files in os.walk("temp/") for fl in files if fl.endswith(source_code_extensions)]
@@ -65,6 +62,9 @@ for file_path in file_list:
         Chunk_Notebook_Functions(file_path, all_function_list)
     else:
         Chunk_Code_File_Functions(file_path, all_function_list, extension)
+
+# Remove repo after creating all_function_list
+shutil.rmtree("temp/", onerror = redo_with_write)
 
 for i in all_function_list:
     print(i)
