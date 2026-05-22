@@ -14,7 +14,7 @@ import chunker
 # GLOBAL VARIABLES
 current_directory = pathlib.Path().resolve()
 repo_exists = os.path.isdir("temp/")
-source_code_extensions = (".py", ".ipynb",".cpp", ".c", ".h", ".hpp", ".js", ".ts", ".java", ".go")
+source_code_extensions = (".py", ".ipynb",".cpp", ".c", ".hpp", ".js", ".ts", ".java", ".go")
 
 def redo_with_write(func, path, exc_info):
     os.chmod(path, stat.S_IWUSR)
