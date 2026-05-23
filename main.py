@@ -13,6 +13,7 @@ from git import Repo
 import chunker
 import indexer
 import retriever
+import generator
 
 # GLOBAL VARIABLES
 current_directory = pathlib.Path().resolve()
@@ -82,4 +83,7 @@ if __name__ == "__main__":
     query_embedding = retriever.Encode_Query(query)
     top20_related_functions = retriever.Query_Collection(query_embedding)
     reranked_function_list = retriever.Rerank_Functions(query, top20_related_functions)
-    print(reranked_function_list)
+
+    # generator part
+    context_string = generator.Dict_To_Context_String_Converter(reranked_function_list)
+    print(context_string)
