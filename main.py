@@ -12,6 +12,7 @@ from git import Repo
 # Local
 import chunker
 import indexer
+import retriever
 
 # GLOBAL VARIABLES
 current_directory = pathlib.Path().resolve()
@@ -76,5 +77,9 @@ if __name__ == "__main__":
         embeddings = indexer.Encode_Functions(all_function_list)
         indexer.Save_Vectors_In_Database(all_function_list, embeddings)
 
-
-    # will be continued
+    # bi_encoder + cross_encoder - retrieve related functions
+    query = input("query: ")
+    query_embedding = retriever.Encode_Query(query)
+    top20_related_functions = retriever.Query_Collection(query_embedding)
+    reranked_function_list = retriever.Rerank_Functions(query, top20_related_functions)
+    print(reranked_function_list)
