@@ -78,12 +78,19 @@ if __name__ == "__main__":
         embeddings = indexer.Encode_Functions(all_function_list)
         indexer.Save_Vectors_In_Database(all_function_list, embeddings)
 
-    # bi_encoder + cross_encoder - retrieve related functions
-    query = input("query: ")
-    query_embedding = retriever.Encode_Query(query)
-    top20_related_functions = retriever.Query_Collection(query_embedding)
-    reranked_function_list = retriever.Rerank_Functions(query, top20_related_functions)
+    chat_history = []
+    while True:
+        # bi_encoder + cross_encoder - retrieve related functions
+        query = input("query: ")
+        if query == "exit":
+            break
+        query_embedding = retriever.Encode_Query(query)
+        top20_related_functions = retriever.Query_Collection(query_embedding)
+        reranked_function_list = retriever.Rerank_Functions(query, top20_related_functions)
 
-    # generator part
-    context_string = generator.Dict_To_Context_String_Converter(reranked_function_list)
-    print(context_string)
+        # generator part
+        context_string = generator.Dict_To_Context_String_Converter(reranked_function_list)
+        user_prompt = generator.Build_User_Prompt(query, context_string)
+        response, chat_history = generator.Chat(user_prompt, chat_history)
+        print(response)
+        print()
