@@ -1,9 +1,7 @@
 import retriever
 import generator
 import sys
-import bert_score
 import api
-import json
 
 
 def Answer_With_RAG(query):

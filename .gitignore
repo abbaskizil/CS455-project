@@ -227,3 +227,11 @@ chroma_db/
 
 # Repo Name
 current_repo.txt
+
+# RAG and NO RAG Answer Files
+CS308_rag.txt
+CS308_no_rag.txt
+CS436-Project_rag.txt
+CS436-Project_no_rag.txt
+test-codes-for-LLM-project_rag.txt
+test-codes-for-LLM-project_no_rag.txt
