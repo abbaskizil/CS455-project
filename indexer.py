@@ -1,5 +1,6 @@
 from sentence_transformers import SentenceTransformer
 import chromadb
+import shutil
 
 # Download the model once
 bi_encoder_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
@@ -27,3 +28,10 @@ def Save_Vectors_In_Database(function_list, function_embeddings):
 
 def Is_Collection_Empty():
     return collection.count() == 0
+
+
+def Clear_Collection():
+    global collection # to change the value of global collection variable, in python when do collection =, it auto assign collection as local var
+    chroma_client.delete_collection("function_collection")
+    shutil.rmtree("chroma_db/", ignore_errors=True)
+    collection = chroma_client.get_or_create_collection("function_collection")
