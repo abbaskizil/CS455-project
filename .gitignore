@@ -224,3 +224,6 @@ temp/
 
 # Vector Database
 chroma_db/
+
+# Repo Name
+current_repo.txt

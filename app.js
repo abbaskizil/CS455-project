@@ -13,6 +13,7 @@ async function indexRepo() {
 
   const btn = document.getElementById('index-btn');
   btn.disabled = true;
+  btn.textContent = 'Indexing...';
   setStatus('Cloning & indexing...', 'loading');
 
   try {
@@ -26,15 +27,18 @@ async function indexRepo() {
 
     if (!res.ok) {
       setStatus(data.detail || 'Indexing failed.', 'error');
+      await loadFiles();
       return;
     }
 
+    setStatus('Loading files...', 'loading');
+    await loadFiles();
     setStatus('Indexed successfully.', 'success');
-    loadFiles();
   } catch (err) {
     setStatus('Cannot reach backend.', 'error');
   } finally {
     btn.disabled = false;
+    btn.textContent = 'Index';
   }
 }
 
@@ -43,6 +47,10 @@ async function loadFiles() {
   try {
     const res  = await fetch(`${API}/files`);
     const data = await res.json();
+    
+    document.getElementById('repo-name-value').style.color = 'var(--yellow)';
+    document.getElementById('repo-name-value').textContent = data.repo || '';
+    
     const list = document.getElementById('file-list');
     list.innerHTML = '';
     (data.files || []).sort().forEach(f => {

@@ -68,7 +68,7 @@ def chat(request: ChatRequest):
 
 @app.get("/files")
 def files():
-    return {"files": Get_Indexed_Files()}
+    return {"files": Get_Indexed_Files(), "repo": Get_Current_Repo()}
 
 
 # Functions
@@ -99,7 +99,10 @@ def Chunk_Code_File_Functions(file_path, function_list, extension):
     function_list.extend(all_chunked_functions)
 
 def Run_Indexing_Pipeline(github_url):
+    sessions.clear()
     indexer.Clear_Collection()
+    with open("current_repo.txt", "w") as f:
+        f.write(github_url.split('/')[-1])
     repo_exists = os.path.isdir("temp/")
     current_directory = pathlib.Path().resolve()
     if not repo_exists:
@@ -152,3 +155,10 @@ def Get_Indexed_Files():
         file_name = os.path.basename(file_path)
         file_names.add(file_name)
     return list(file_names)
+
+def Get_Current_Repo():
+    try:
+        with open("current_repo.txt", "r") as f:
+            return f.read().strip()
+    except:
+        return ""

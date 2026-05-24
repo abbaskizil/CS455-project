@@ -11,7 +11,7 @@ def Encode_Functions(function_list):
     # Calculate embeddings by calling model.encode()
     function_content_list = [f["function_content"] for f in function_list]
     embeddings = bi_encoder_model.encode(function_content_list, show_progress_bar=True)
-    print("\nEMBEDDING...\n")
+    print("\nEMBEDDING...")
     return embeddings
 
 
