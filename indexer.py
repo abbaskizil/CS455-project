@@ -18,7 +18,7 @@ def Encode_Functions(function_list):
 def Save_Vectors_In_Database(function_list, function_embeddings):
     # !! if more than nearly 5000 functions, then add by batches
     collection.add(
-        ids = [f["function_name"] for f in function_list],
+        ids = [f"{f['function_name']}-{f['start_line']}-{f['end_line']}" for f in function_list],
         documents = [f["function_content"] for f in function_list],
         embeddings = function_embeddings,
         metadatas = [{k: v for k, v in f.items() if k != "function_content"} for f in function_list]
