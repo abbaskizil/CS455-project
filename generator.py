@@ -1,6 +1,6 @@
 import anthropic
 from dotenv import load_dotenv
-
+import os
 
 load_dotenv()
 client = anthropic.Anthropic()
@@ -10,9 +10,12 @@ def Dict_To_Context_String_Converter(reranked_function_list):
     context_string = ""
     for idx, function in enumerate(reranked_function_list):
         order = idx + 1
+        file_name = os.path.basename(function["function_name"].split("::")[0])
+        func_part = function["function_name"].split("::")[-1].lstrip(".")
+        clean_name = f"{file_name}::{func_part}"
         context_string += f"""
 --- FUNCTION {order} ---
-Function Name: {function["function_name"]}
+Function Name: {clean_name}
 Code:
 {function["code"]}
 Start Line: {function['start_line']}
