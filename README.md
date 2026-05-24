@@ -22,7 +22,7 @@ CodeSage lets you ask natural language questions about any GitHub repository and
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/omuremreyildiz03/CS455-project
+git clone https://github.com/abbaskizil/CS455-project
 cd CS455-project
 ```
 
